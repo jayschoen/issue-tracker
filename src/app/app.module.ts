@@ -1,6 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
 
+import { HttpClientModule } from '@angular/common/http';
+
 import { AppComponent } from './app.component';
 import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 
@@ -17,6 +19,7 @@ import { IssueBoxComponent } from './issue-box/issue-box.component';
   ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     BrowserAnimationsModule,
     MatGridListModule
   ],

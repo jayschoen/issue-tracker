@@ -1,4 +1,12 @@
 <mat-grid-list cols="5" rowHeight="100px">
+        <mat-grid-tile *ngFor="let issue of processed_issues" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
+            {{issue.text}}
+        </mat-grid-tile>
+    </mat-grid-list>
+
+<br><br>
+
+<mat-grid-list cols="5" rowHeight="100px">
     <mat-grid-tile *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows" [style.background]="tile.color">
         {{tile.text}}
     </mat-grid-tile>
