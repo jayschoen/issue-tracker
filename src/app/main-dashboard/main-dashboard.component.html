@@ -1,3 +1,5 @@
 <div>
-    <app-issue-row *ngFor="let row of rows" [row]="row"></app-issue-row>
+    <div *ngFor="let row of rows">
+        <app-issue-box *ngFor="let issue of row['row_data']" [issue]="issue"></app-issue-box>
+    </div>
 </div>
