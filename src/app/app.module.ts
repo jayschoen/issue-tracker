@@ -17,6 +17,7 @@ import { IssueRowComponent } from './issue-row/issue-row.component';
   imports: [
     BrowserModule
   ],
+  bootstrap: [ AppComponent ],
   providers: []
 })
 export class AppModule { }
