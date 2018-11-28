@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 
-import { Subject } from 'rxjs';
+import { combineLatest } from 'rxjs'; 
+import { mergeMap, tap,  } from 'rxjs/operators';
 
 import { Tile } from '../tile';
 
@@ -15,23 +16,41 @@ export class MainDashboardComponent implements OnInit {
 
   tiles: Tile[];
 
-  processed_issues: Tile[];
-
+  processed_issues: Array<Tile[]>;
 
   constructor(private issuesService: IssuesService) {}
 
   ngOnInit() {
     this.tiles = this.test_data(23);
 
-    this.issuesService.getIssues()
+    this.issuesService.getRepos()
+      .pipe(
+        mergeMap(
+          repos => {
+          let temp = [];
+          let i = 0;
+          for (let repo of repos) {
+            temp.push(this.issuesService.getIssuesByRepo(null, repo).pipe(tap(data=> console.log(data))));
+          }
+          return combineLatest(temp);
+        })
+      )
       .subscribe(
-        issues => {
-          this.processed_issues = this.processIssues(issues);
-          console.log(issues);
+        repos => {
+          console.log(repos);
+          let organized_repos = [];
+          for (let repo of repos) {
+            if (repo !== null && repo.length > 0) {
+              let repo_name = this.getRepoName(repo[0]['repository_url']);
+              organized_repos[repo_name] = repo;
+            }
+          }
+          console.log(organized_repos);
+
         },
         error => console.error(error),
-        () => console.log('complete')
-      );
+        () => "complete"
+      )
   }
 
   processIssues(issues) {
@@ -44,6 +63,11 @@ export class MainDashboardComponent implements OnInit {
       color: color 
     }
     });
+  }
+
+  getRepoName(url) {
+    let temp = url.split('/');
+    return temp[5];
   }
 
   /* *** */
