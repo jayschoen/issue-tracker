@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, expand, mergeMap} from 'rxjs/operators';
-import { empty } from 'rxjs';
+import { map, expand, catchError } from 'rxjs/operators';
+import { empty, throwError } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -27,7 +27,7 @@ export class IssuesService {
     return this.getAllPages(url, repo_name)
     .pipe(
       expand(data => data.next ? this.getAllPages(data.next) : empty()),
-      mergeMap(({content}) => content)
+      map(({content}) => content),
     );
   }
 
@@ -40,9 +40,13 @@ export class IssuesService {
       {observe: 'response'}
     )
     .pipe(
+      catchError(error => {
+        return throwError(error);
+      }),
       map(response => 
         this.retrieve_pagination_links(response)
-      ));
+      )
+      );
   }
 
   getRepos() {
@@ -80,7 +84,7 @@ export class IssuesService {
     const nextHeader = this.parse_next_header(response.headers.get('Link'));
     return {
       content: response.body,
-      next: nextHeader ?  nextHeader : null
+      next: nextHeader ? nextHeader : null
     }
     
 }

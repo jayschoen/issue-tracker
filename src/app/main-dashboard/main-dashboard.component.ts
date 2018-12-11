@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
-import { combineLatest } from 'rxjs'; 
-import { mergeMap, tap,  } from 'rxjs/operators';
+import { Observable } from 'rxjs'; 
+import { mergeMap, map, toArray } from 'rxjs/operators';
 
 import { Tile } from '../tile';
 
 import { IssuesService } from '../issues.service';
+
+export interface RepoMapping {
+  repoName: string;
+  issues: any[];
+}
 
 @Component({
   selector: 'app-main-dashboard',
@@ -18,6 +23,10 @@ export class MainDashboardComponent implements OnInit {
 
   processed_issues: Array<Tile[]>;
 
+  allData: Observable<any>;
+
+  cooked_issues: Array<RepoMapping> = [];
+
   constructor(private issuesService: IssuesService) {}
 
   ngOnInit() {
@@ -25,32 +34,30 @@ export class MainDashboardComponent implements OnInit {
 
     this.issuesService.getRepos()
       .pipe(
-        mergeMap(
-          repos => {
-          let temp = [];
-          let i = 0;
-          for (let repo of repos) {
-            temp.push(this.issuesService.getIssuesByRepo(null, repo).pipe(tap(data=> console.log(data))));
-          }
-          return combineLatest(temp);
-        })
+        mergeMap( x => x),
+        mergeMap((repo: string) => {
+          const current = this.issuesService
+          .getIssuesByRepo(null, repo)
+          .pipe(
+            toArray(),
+            map((issues: any[]) => { return { repo: repo, issues: issues }}));
+        return current
+        }),
+        toArray(),
       )
       .subscribe(
-        repos => {
-          console.log(repos);
-          let organized_repos = [];
-          for (let repo of repos) {
-            if (repo !== null && repo.length > 0) {
-              let repo_name = this.getRepoName(repo[0]['repository_url']);
-              organized_repos[repo_name] = repo;
-            }
-          }
-          console.log(organized_repos);
-
+        data => {
+          console.log(data);
         },
         error => console.error(error),
         () => "complete"
       )
+  }
+
+  processRepos(repos) {
+    return repos.map(repo => {
+      return this.processIssues(repo);
+    });
   }
 
   processIssues(issues) {
