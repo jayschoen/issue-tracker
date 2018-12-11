@@ -1,11 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 
-import { combineLatest, forkJoin ,of, from, zip, Observable, empty } from 'rxjs'; 
-import { mergeMap, tap, combineAll,map, expand } from 'rxjs/operators';
+import { Observable } from 'rxjs'; 
+import { mergeMap, map, toArray } from 'rxjs/operators';
 
 import { Tile } from '../tile';
 
 import { IssuesService } from '../issues.service';
+
+export interface RepoMapping {
+  repoName: string;
+  issues: any[];
+}
 
 @Component({
   selector: 'app-main-dashboard',
@@ -20,6 +25,8 @@ export class MainDashboardComponent implements OnInit {
 
   allData: Observable<any>;
 
+  cooked_issues: Array<RepoMapping> = [];
+
   constructor(private issuesService: IssuesService) {}
 
   ngOnInit() {
@@ -27,80 +34,33 @@ export class MainDashboardComponent implements OnInit {
 
     this.issuesService.getRepos()
       .pipe(
-
-        /* .pipe(
-          expand(data => data.next ? this.getAllPages(data.next) : empty()),
-          mergeMap(({content}) => content),
-        ); */
-        // map(
         mergeMap( x => x),
-        tap(data => console.log(data)),
-        expand(repo => repo ? this.issuesService.getIssuesByRepo(null, repo).pipe(tap(data => console.log(data))) : empty()),
-        // mergeMap(
-        //   repos => {
-        //   let temp = [];
-        //   let count = 0;
-        //   // for (let repo of repos) {
-        //   //   temp.push(this.issuesService.getIssuesByRepo(null, repo).pipe(tap(data => console.log(data))));
-        //   //   count++;
-        //   //   if (count > 0) {
-        //   //     break;
-        //   //   }
-        //   // }
-
-        //   // let temp = repos.map(
-        //   //   repo => { 
-        //   //     console.log(repo);
-        //   //     return this.issuesService.getIssuesByRepo(null, repo)
-        //   //     .pipe(
-        //   //       tap(data => console.log("herpderp", data))
-        //   //     )
-        //   //   }
-        //   // );
-        //   console.log('pre_combineLatest');
-        //   console.log(temp);
-        //   // return temp
-        //   return combineLatest(temp);
-        // }),
-        tap(data => console.log(data)),
-        // mergeMap(data => of(data)),
-        // mergeMap(data => zip(...data)),
-        tap(data => console.log("fired")),
-
+        mergeMap((repo: string) => {
+          const current = this.issuesService
+          .getIssuesByRepo(null, repo)
+          .pipe(
+            toArray(),
+            map((issues: any[]) => { return { repo: repo, issues: issues }}));
+        return current
+        }),
+        toArray(),
       )
       .subscribe(
-        repos => {
-          console.log('SUBSCRIBE!!!');
-          console.log(repos);
-          // let organized_repos = [];
-          // for (let repo of repos) {
-          //   if (repo !== null && repo.length > 0) {
-          //     let repo_name = this.getRepoName(repo[0]['repository_url']);
-          //     organized_repos[repo_name] = repo;
-          //   }
-          // }
-          
-          // console.log(organized_repos);
-
-          // console.log(this.processRepos(organized_repos));
-
-
+        data => {
+          console.log(data);
         },
         error => console.error(error),
         () => "complete"
       )
-     
   }
 
   processRepos(repos) {
-    console.log('processRepos');
     return repos.map(repo => {
       return this.processIssues(repo);
     });
   }
 
   processIssues(issues) {
-    console.log('processIssues');
     return issues.map(issue => {
       const color = (issue['state'] == 'open') ? '#CFFFBE' : '#FFDDDD';
       return { 
