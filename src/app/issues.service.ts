@@ -20,7 +20,7 @@ export class IssuesService {
   }
 
   getIssues() {
-    return this.httpClient.get(`${this.github_url}/repos/${this.owner}/issue-tracker/issues?state=all&sort=created&direction=desc&per_page=100&access_token=${this.access_token}`);
+    return this.httpClient.get(`${this.github_url}/repos/${this.owner}/issue-tracker/issues?state=all&sort=created&direction=asc&per_page=100&access_token=${this.access_token}`);
   }
 
   getIssuesByRepo(url?, repo_name?) {
@@ -33,7 +33,7 @@ export class IssuesService {
 
   getAllPages(url?, repo_name?){
     if (repo_name) {
-      url = `${this.github_url}/repos/${this.owner}/${repo_name}/issues?state=all&sort=created&direction=desc&per_page=100&access_token=${this.access_token}`
+      url = `${this.github_url}/repos/${this.owner}/${repo_name}/issues?state=all&sort=created&direction=asc&per_page=100&access_token=${this.access_token}`
     }
     return this.httpClient.get(
       url,
