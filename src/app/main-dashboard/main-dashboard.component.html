@@ -3,7 +3,7 @@
     {{repo.name | json}}
     <mat-grid-list cols="5" rowHeight="100px">
         <mat-grid-tile *ngFor="let issue of repo.data" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
-            {{issue.text}}
+            <a href="{{issue.url}}">{{issue.text}}</a>
         </mat-grid-tile>
     </mat-grid-list>
 </div>

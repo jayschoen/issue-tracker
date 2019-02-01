@@ -65,12 +65,14 @@ export class MainDashboardComponent implements OnInit {
   }
 
   processIssues(repo) {
+    console.log(repo);
     let data = [];
     for (let issues of repo['issues']) {
       for (let issue of issues) {
         const color = (issue['state'] == 'open') ? '#CFFFBE' : '#FFDDDD';
         data.push({
           text: "#" + issue['number'] + ": " + issue['title'].substr(0, 20),
+          url: issue['html_url'],
           rows: 1,
           cols: 1,
           color: color
