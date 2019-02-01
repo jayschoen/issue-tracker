@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { map, expand, catchError } from 'rxjs/operators';
-import { empty, throwError } from 'rxjs';
+import { empty, throwError, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -69,11 +69,11 @@ export class IssuesService {
     }
 
     let parts = header.split(',');
-    var links = {};
+    let links = {};
     parts.forEach( p => {
       let section = p.split(';');
-      var url = section[0].replace(/<(.*)>/, '$1').trim();
-      var name = section[1].replace(/rel="(.*)"/, '$1').trim();
+      let url = section[0].replace(/<(.*)>/, '$1').trim();
+      let name = section[1].replace(/rel="(.*)"/, '$1').trim();
       links[name] = url;
 
     }); 
@@ -87,5 +87,5 @@ export class IssuesService {
       next: nextHeader ? nextHeader : null
     }
     
-}
+  }
 }

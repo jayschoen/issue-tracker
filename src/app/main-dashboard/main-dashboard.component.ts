@@ -1,8 +1,9 @@
 import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
-import { mergeMap, map, toArray } from 'rxjs/operators';
+import { mergeMap, map, toArray, filter } from 'rxjs/operators';
 
 import { Tile } from '../tile';
 import { IssuesService } from '../issues.service';
+import { ConfigurationService } from '../configuration.service';
 
 @Component({
   selector: 'app-main-dashboard',
@@ -11,25 +12,36 @@ import { IssuesService } from '../issues.service';
 })
 export class MainDashboardComponent implements OnInit {
 
+  includedRepos: Array<string>;
+
   test_tiles: Tile[];
 
   processed_repos = [];
 
-  constructor(private issuesService: IssuesService, private cdr : ChangeDetectorRef) {}
+  constructor(
+    private configService: ConfigurationService,
+    private issuesService: IssuesService,
+    private cdr : ChangeDetectorRef
+    ) {}
 
   ngOnInit() {
+
+    this.includedRepos = this.configService.settings['includedRepos'];
+
     this.test_tiles = this.test_data(23);
 
     this.issuesService.getRepos()
       .pipe(
         mergeMap( x => x),
+        filter( x => this.includedRepos.includes(x)),
         mergeMap((repo: string) => {
-          const current = this.issuesService
-          .getIssuesByRepo(null, repo)
-          .pipe(
-            toArray(),
-            map((issues: any[]) => { return { repo: repo, issues: issues }}));
-        return current
+            const current = this.issuesService
+            .getIssuesByRepo(null, repo)
+            .pipe(
+              toArray(),
+              map((issues: any[]) => { return { repo: repo, issues: issues }})
+            );
+            return current;
         }),
         toArray(),
         map(data => this.processRepos(data)),
@@ -65,7 +77,7 @@ export class MainDashboardComponent implements OnInit {
   }
 
   processIssues(repo) {
-    console.log(repo);
+    // console.log(repo);
     let data = [];
     for (let issues of repo['issues']) {
       for (let issue of issues) {

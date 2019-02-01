@@ -1,16 +1,21 @@
+import { APP_INITIALIZER } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-
 import { HttpClientModule } from '@angular/common/http';
-
 import { AppComponent } from './app.component';
-import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 
+import { ConfigurationService } from './configuration.service';
+import { MainDashboardComponent } from './main-dashboard/main-dashboard.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 
 import { IssueBoxComponent } from './issue-box/issue-box.component';
 
+export function initializeApp(configurationService: ConfigurationService) {
+  return () => {
+    return configurationService.loadConfig();
+  };
+}
 @NgModule({
   declarations: [
     AppComponent,
@@ -24,6 +29,14 @@ import { IssueBoxComponent } from './issue-box/issue-box.component';
     MatGridListModule
   ],
   bootstrap: [ AppComponent ],
-  providers: []
+  providers: [
+    ConfigurationService,
+    {
+      provide: APP_INITIALIZER,
+      useFactory: initializeApp,
+      deps: [ConfigurationService],
+      multi: true
+    }
+  ]
 })
 export class AppModule { }
