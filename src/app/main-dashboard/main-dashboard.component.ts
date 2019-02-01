@@ -1,16 +1,8 @@
-import { Component, OnInit } from '@angular/core';
-
-import { Observable } from 'rxjs'; 
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { mergeMap, map, toArray } from 'rxjs/operators';
 
 import { Tile } from '../tile';
-
 import { IssuesService } from '../issues.service';
-
-export interface RepoMapping {
-  repoName: string;
-  issues: any[];
-}
 
 @Component({
   selector: 'app-main-dashboard',
@@ -19,18 +11,14 @@ export interface RepoMapping {
 })
 export class MainDashboardComponent implements OnInit {
 
-  tiles: Tile[];
+  test_tiles: Tile[];
 
-  processed_issues: Array<Tile[]>;
+  processed_repos = [];
 
-  allData: Observable<any>;
-
-  cooked_issues: Array<RepoMapping> = [];
-
-  constructor(private issuesService: IssuesService) {}
+  constructor(private issuesService: IssuesService, private cdr : ChangeDetectorRef) {}
 
   ngOnInit() {
-    this.tiles = this.test_data(23);
+    this.test_tiles = this.test_data(23);
 
     this.issuesService.getRepos()
       .pipe(
@@ -44,32 +32,52 @@ export class MainDashboardComponent implements OnInit {
         return current
         }),
         toArray(),
+        map(data => this.processRepos(data)),
       )
       .subscribe(
         data => {
-          console.log(data);
+          this.processed_repos = data
         },
         error => console.error(error),
         () => "complete"
       )
   }
 
-  processRepos(repos) {
-    return repos.map(repo => {
-      return this.processIssues(repo);
-    });
+  processRepos(repos): any[] {
+    const datalist = [];
+    for (let data of repos) {
+      let tmp = {}
+      let repo = data['repo'];
+      if (data['issues'].length > 0) {
+        tmp = {
+          "name": repo,
+          "data": this.processIssues(data)
+        }
+      } else {
+        tmp = {
+          "name": repo,
+          "data": null
+        }
+      }
+      datalist.push(tmp);
+    }
+    return datalist;
   }
 
-  processIssues(issues) {
-    return issues.map(issue => {
-      const color = (issue['state'] == 'open') ? '#CFFFBE' : '#FFDDDD';
-      return { 
-      text: "#" + issue['number'] + ": " + issue['title'].substr(0, 20),
-      rows: 1,
-      cols: 1,
-      color: color 
+  processIssues(repo) {
+    let data = [];
+    for (let issues of repo['issues']) {
+      for (let issue of issues) {
+        const color = (issue['state'] == 'open') ? '#CFFFBE' : '#FFDDDD';
+        data.push({
+          text: "#" + issue['number'] + ": " + issue['title'].substr(0, 20),
+          rows: 1,
+          cols: 1,
+          color: color
+        });
+      }
     }
-    });
+    return data;
   }
 
   getRepoName(url) {

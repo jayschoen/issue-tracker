@@ -1,13 +1,17 @@
-<mat-grid-list cols="5" rowHeight="100px">
-        <mat-grid-tile *ngFor="let issue of processed_issues" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
+
+<div *ngFor="let repo of processed_repos">
+    {{repo.name | json}}
+    <mat-grid-list cols="5" rowHeight="100px">
+        <mat-grid-tile *ngFor="let issue of repo.data" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
             {{issue.text}}
         </mat-grid-tile>
     </mat-grid-list>
+</div>
 
-<br><br>
+<!-- <br><br>
 
 <mat-grid-list cols="5" rowHeight="100px">
-    <mat-grid-tile *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows" [style.background]="tile.color">
+    <mat-grid-tile *ngFor="let tile of test_tiles" [colspan]="tile.cols" [rowspan]="tile.rows" [style.background]="tile.color">
         {{tile.text}}
     </mat-grid-tile>
-</mat-grid-list>
+</mat-grid-list> -->
