@@ -1,7 +1,9 @@
 
 <div *ngFor="let repo of processed_repos">
     {{repo.name | json}}
-    <mat-grid-list cols="5" rowHeight="100px">
+    <!-- cols = # of columns -->
+    <!-- rowHeight = ratio... 5 wide, 1 high -->
+    <mat-grid-list cols="5" rowHeight="5:1">
         <mat-grid-tile *ngFor="let issue of repo.data" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
             <a href="{{issue.url}}">{{issue.text}}</a>
         </mat-grid-tile>

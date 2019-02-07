@@ -17,13 +17,13 @@ export class ConfigurationService {
     return this.httpClient.get(jsonFile)
       .toPromise()
       .then(
-        data => { 
+        data => {
           this.settings = data;
       });
 
   }
 
-  get settings(){
+  get settings() {
     return this.app_settings;
   }
 

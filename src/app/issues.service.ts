@@ -9,18 +9,20 @@ import { empty, throwError, Observable, of } from 'rxjs';
 export class IssuesService {
 
   // probably need to move this int the environment file
-  private github_url = "https://api.github.com";
+  private github_url = '';
 
-  private access_token = "";
-  private owner = "";
-  private organization = "";
+  private access_token = '';
+  private owner = ''; //jayschoen";
+  private organization = '';
 
   constructor(private httpClient: HttpClient) {
     this.getRepos();
   }
 
   getIssues() {
-    return this.httpClient.get(`${this.github_url}/repos/${this.owner}/issue-tracker/issues?state=all&sort=created&direction=asc&per_page=100&access_token=${this.access_token}`);
+    return this.httpClient.get(
+      `${this.github_url}/repos/${this.owner}/issue-tracker/issues?state=all&sort=created&direction=asc&per_page=100&access_token=${this.access_token}`
+    );
   }
 
   getIssuesByRepo(url?, repo_name?) {
@@ -31,7 +33,7 @@ export class IssuesService {
     );
   }
 
-  getAllPages(url?, repo_name?){
+  getAllPages(url?, repo_name?) {
     if (repo_name) {
       url = `${this.github_url}/repos/${this.owner}/${repo_name}/issues?state=all&sort=created&direction=asc&per_page=100&access_token=${this.access_token}`
     }
@@ -43,7 +45,7 @@ export class IssuesService {
       catchError(error => {
         return throwError(error);
       }),
-      map(response => 
+      map(response =>
         this.retrieve_pagination_links(response)
       )
       );
@@ -54,8 +56,8 @@ export class IssuesService {
       .pipe(
         map(
           repos => {
-            let temp = [];
-            for (let repo of repos) {
+            const temp = [];
+            for (const repo of repos) {
               temp.push(repo['name']);
             }
             return temp;
@@ -68,24 +70,23 @@ export class IssuesService {
       return ;
     }
 
-    let parts = header.split(',');
-    let links = {};
+    const parts = header.split(',');
+    const links = {};
     parts.forEach( p => {
-      let section = p.split(';');
-      let url = section[0].replace(/<(.*)>/, '$1').trim();
-      let name = section[1].replace(/rel="(.*)"/, '$1').trim();
+      const section = p.split(';');
+      const url = section[0].replace(/<(.*)>/, '$1').trim();
+      const name = section[1].replace(/rel="(.*)"/, '$1').trim();
       links[name] = url;
 
-    }); 
-    return links["next"];
+    });
+    return links['next'];
   }
 
-  retrieve_pagination_links(response){
+  retrieve_pagination_links(response) {
     const nextHeader = this.parse_next_header(response.headers.get('Link'));
     return {
       content: response.body,
       next: nextHeader ? nextHeader : null
-    }
-    
+    };
   }
 }

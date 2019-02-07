@@ -21,7 +21,7 @@ export class MainDashboardComponent implements OnInit {
   constructor(
     private configService: ConfigurationService,
     private issuesService: IssuesService,
-    private cdr : ChangeDetectorRef
+    private cdr: ChangeDetectorRef
     ) {}
 
   ngOnInit() {
@@ -48,27 +48,27 @@ export class MainDashboardComponent implements OnInit {
       )
       .subscribe(
         data => {
-          this.processed_repos = data
+          this.processed_repos = data;
         },
         error => console.error(error),
-        () => "complete"
-      )
+        () => 'complete'
+      );
   }
 
   processRepos(repos): any[] {
     const datalist = [];
-    for (let data of repos) {
-      let tmp = {}
-      let repo = data['repo'];
+    for (const data of repos) {
+      let tmp = {};
+      const repo = data['repo'];
       if (data['issues'].length > 0) {
         tmp = {
-          "name": repo,
-          "data": this.processIssues(data)
-        }
+          'name': repo,
+          'data': this.processIssues(data)
+        };
       } else {
         tmp = {
-          "name": repo,
-          "data": null
+          'name': repo,
+          'data': null
         }
       }
       datalist.push(tmp);
@@ -77,13 +77,12 @@ export class MainDashboardComponent implements OnInit {
   }
 
   processIssues(repo) {
-    // console.log(repo);
-    let data = [];
-    for (let issues of repo['issues']) {
-      for (let issue of issues) {
-        const color = (issue['state'] == 'open') ? '#CFFFBE' : '#FFDDDD';
+    const data = [];
+    for (const issues of repo['issues']) {
+      for (const issue of issues) {
+        const color = (issue['state'] === 'open') ? '#CFFFBE' : '#FFDDDD';
         data.push({
-          text: "#" + issue['number'] + ": " + issue['title'].substr(0, 20),
+          text: '#' + issue['number'] + ': ' + issue['title'].substr(0, 20),
           url: issue['html_url'],
           rows: 1,
           cols: 1,
@@ -95,13 +94,13 @@ export class MainDashboardComponent implements OnInit {
   }
 
   getRepoName(url) {
-    let temp = url.split('/');
+    const temp = url.split('/');
     return temp[5];
   }
 
   /* *** */
   test_data(count) {
-    let temp = [];
+    const temp = [];
     for (let i = 1; i <= count; i++) {
       let color = '';
       if (this.isPrime(i) ) {
@@ -114,14 +113,17 @@ export class MainDashboardComponent implements OnInit {
         rows: 1,
         cols: 1,
         color: color
-      })
+      });
     }
     return temp;
   }
 
   isPrime(num) {
-    for(var i = 2; i < num; i++)
-      if(num % i === 0) return false;
+    for (let i = 2; i < num; i++) {
+      if (num % i === 0) {
+        return false;
+      }
+    }
     return num !== 1 && num !== 0;
   }
   /* *** */
