@@ -9,8 +9,6 @@ import { MainDashboardComponent } from './main-dashboard/main-dashboard.componen
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatGridListModule } from '@angular/material/grid-list';
 
-import { IssueBoxComponent } from './issue-box/issue-box.component';
-
 export function initializeApp(configurationService: ConfigurationService) {
   return () => {
     return configurationService.loadConfig();
@@ -19,8 +17,7 @@ export function initializeApp(configurationService: ConfigurationService) {
 @NgModule({
   declarations: [
     AppComponent,
-    MainDashboardComponent,
-    IssueBoxComponent
+    MainDashboardComponent
   ],
   imports: [
     BrowserModule,
