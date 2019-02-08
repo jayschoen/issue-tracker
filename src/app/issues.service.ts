@@ -52,7 +52,7 @@ export class IssuesService {
   }
 
   getRepos() {
-    return this.httpClient.get<any[]>(`${this.github_url}/orgs/${this.organization}/repos?access_token=${this.access_token}`)
+    return this.httpClient.get<any[]>(`${this.github_url}/orgs/${this.organization}/repos?access_token=${this.access_token}&per_page=100`)
       .pipe(
         map(
           repos => {
