@@ -89,4 +89,47 @@ export class IssuesService {
       next: nextHeader ? nextHeader : null
     };
   }
+
+  processRepos(repos): any[] {
+    const datalist = [];
+    for (const data of repos) {
+      let tmp = {};
+      const repo = data['repo'];
+      if (data['issues'].length > 0) {
+        tmp = {
+          'name': repo,
+          'data': this.processIssues(data)
+        };
+      } else {
+        tmp = {
+          'name': repo,
+          'data': null
+        };
+      }
+      datalist.push(tmp);
+    }
+    return datalist;
+  }
+
+  processIssues(repo) {
+    const data = [];
+    for (const issues of repo['issues']) {
+      for (const issue of issues) {
+        const color = (issue['state'] === 'open') ? '#CFFFBE' : '#FFDDDD';
+        data.push({
+          text: '#' + issue['number'] + ': ' + issue['title'].substr(0, 20),
+          url: issue['html_url'],
+          rows: 1,
+          cols: 1,
+          color: color
+        });
+      }
+    }
+    return data;
+  }
+
+  getRepoName(url) {
+    const temp = url.split('/');
+    return temp[5];
+  }
 }

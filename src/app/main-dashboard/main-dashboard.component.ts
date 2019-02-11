@@ -14,8 +14,6 @@ export class MainDashboardComponent implements OnInit {
 
   includedRepos: Array<string>;
 
-  test_tiles: Tile[];
-
   processed_repos = [];
 
   constructor(
@@ -28,11 +26,9 @@ export class MainDashboardComponent implements OnInit {
 
     this.includedRepos = this.configService.settings['includedRepos'];
 
-    this.test_tiles = this.test_data(23);
-
     this.issuesService.getRepos()
       .pipe(
-        mergeMap( x => x),
+        mergeMap( x => x ),
         filter( x => this.includedRepos.includes(x)),
         mergeMap((repo: string) => {
             const current = this.issuesService
@@ -44,7 +40,7 @@ export class MainDashboardComponent implements OnInit {
             return current;
         }),
         toArray(),
-        map(data => this.processRepos(data)),
+        map(data => this.issuesService.processRepos(data)),
       )
       .subscribe(
         data => {
@@ -54,78 +50,4 @@ export class MainDashboardComponent implements OnInit {
         () => 'complete'
       );
   }
-
-  processRepos(repos): any[] {
-    const datalist = [];
-    for (const data of repos) {
-      let tmp = {};
-      const repo = data['repo'];
-      if (data['issues'].length > 0) {
-        tmp = {
-          'name': repo,
-          'data': this.processIssues(data)
-        };
-      } else {
-        tmp = {
-          'name': repo,
-          'data': null
-        }
-      }
-      datalist.push(tmp);
-    }
-    return datalist;
-  }
-
-  processIssues(repo) {
-    const data = [];
-    for (const issues of repo['issues']) {
-      for (const issue of issues) {
-        const color = (issue['state'] === 'open') ? '#CFFFBE' : '#FFDDDD';
-        data.push({
-          text: '#' + issue['number'] + ': ' + issue['title'].substr(0, 20),
-          url: issue['html_url'],
-          rows: 1,
-          cols: 1,
-          color: color
-        });
-      }
-    }
-    return data;
-  }
-
-  getRepoName(url) {
-    const temp = url.split('/');
-    return temp[5];
-  }
-
-  /* *** */
-  test_data(count) {
-    const temp = [];
-    for (let i = 1; i <= count; i++) {
-      let color = '';
-      if (this.isPrime(i) ) {
-        color = 'orange';
-      } else {
-        color = 'blue';
-      }
-      temp.push({
-        text: 'issue ' + i,
-        rows: 1,
-        cols: 1,
-        color: color
-      });
-    }
-    return temp;
-  }
-
-  isPrime(num) {
-    for (let i = 2; i < num; i++) {
-      if (num % i === 0) {
-        return false;
-      }
-    }
-    return num !== 1 && num !== 0;
-  }
-  /* *** */
-
 }
