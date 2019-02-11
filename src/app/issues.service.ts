@@ -1,7 +1,9 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { map, expand, catchError } from 'rxjs/operators';
-import { empty, throwError, Observable, of } from 'rxjs';
+import { map, mergeMap, expand, catchError, toArray, filter, tap } from 'rxjs/operators';
+import { empty, throwError, BehaviorSubject } from 'rxjs';
+
+import { ConfigurationService } from './configuration.service';
 
 @Injectable({
   providedIn: 'root'
@@ -12,11 +14,18 @@ export class IssuesService {
   private github_url = '';
 
   private access_token = '';
-  private owner = ''; //jayschoen";
+  private owner = '';
   private organization = '';
 
-  constructor(private httpClient: HttpClient) {
-    this.getRepos();
+  includedRepos: Array<string>;
+
+  data$ = new BehaviorSubject<any[]>(undefined);
+
+  constructor(
+    private httpClient: HttpClient,
+    private configService: ConfigurationService
+  ) {
+    this.includedRepos = this.configService.settings['includedRepos'];
   }
 
   getIssues() {
@@ -132,4 +141,48 @@ export class IssuesService {
     const temp = url.split('/');
     return temp[5];
   }
+
+  updateData() {
+    return this.getRepos()
+      .pipe(
+        mergeMap( x => x ),
+        filter( x => this.includedRepos.includes(x)),
+        mergeMap((repo: string) => {
+            const current = this.getIssuesByRepo(null, repo)
+            .pipe(
+              toArray(),
+              map((issues: any[]) => { return { repo: repo, issues: issues }})
+            );
+            return current;
+        }),
+        toArray(),
+        map(data => this.processRepos(data)),
+        tap(data => {
+          data.sort(this.alphaSort('name'));
+          this.data$.next(data);
+        })
+      )
+      .subscribe(
+        data => data,
+        error => console.error(error),
+      );
+  }
+
+  alphaSort(property) {
+    let sortOrder = 1;
+
+    if (property[0] === '-') {
+      sortOrder = -1;
+      property = property.substr(1);
+    }
+
+    return ((a, b) => {
+      if (sortOrder === -1) {
+        return b[property].localeCompare(a[property]);
+      } else {
+        return a[property].localeCompare(b[property]);
+      }
+    });
+  }
+
 }
