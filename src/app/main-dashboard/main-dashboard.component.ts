@@ -9,6 +9,8 @@ import { IssuesService } from '../issues.service';
 })
 export class MainDashboardComponent implements OnInit {
 
+  issueColors = this.issuesService.issueColors;
+
   processed_repos = [];
 
   interval: any;

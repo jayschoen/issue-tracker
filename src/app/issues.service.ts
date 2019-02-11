@@ -17,6 +17,11 @@ export class IssuesService {
   private owner = '';
   private organization = '';
 
+  issueColors = {
+    'open': '#FFDDDD',
+    'closed': '#CFFFBE'
+  }
+
   includedRepos: Array<string>;
 
   data$ = new BehaviorSubject<any[]>(undefined);
@@ -124,15 +129,17 @@ export class IssuesService {
     const data = [];
     for (const issues of repo['issues']) {
       for (const issue of issues) {
-        // open === red (#FFDDDD), closed === green (#CFFFBE)
-        const color = (issue['state'] === 'open') ? '#FFDDDD' : '#CFFFBE';
-        data.push({
-          text: '#' + issue['number'] + ': ' + issue['title'].substr(0, 20),
-          url: issue['html_url'],
-          rows: 1,
-          cols: 1,
-          color: color
-        });
+        if (issue['title'].substr(0, 4) === 'TASK') {
+          // open === red (#FFDDDD), closed === green (#CFFFBE)
+          const color = (issue['state'] === 'open') ? this.issueColors.open : this.issueColors.closed;
+          data.push({
+            text: '#' + issue['number'] + ': ' + issue['title'].substr(5, 20),
+            url: issue['html_url'],
+            rows: 1,
+            cols: 1,
+            color: color
+          });
+        }
       }
     }
     return data;

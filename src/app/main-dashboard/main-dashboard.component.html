@@ -1,4 +1,12 @@
 
+<!-- temporary open/closed key-->
+<mat-grid-list cols="2" rowHeight="30">
+    <mat-grid-tile [style.background]="issueColors.open">OPEN</mat-grid-tile>
+    <mat-grid-tile [style.background]="issueColors.closed">CLOSED</mat-grid-tile>
+</mat-grid-list>
+<br>
+<!-- temporary open/closed key-->
+
 <div *ngFor="let repo of processed_repos">
     {{repo.name | json}}
     <!-- cols = # of columns -->
