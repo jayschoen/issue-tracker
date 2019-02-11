@@ -124,7 +124,8 @@ export class IssuesService {
     const data = [];
     for (const issues of repo['issues']) {
       for (const issue of issues) {
-        const color = (issue['state'] === 'open') ? '#CFFFBE' : '#FFDDDD';
+        // open === red (#FFDDDD), closed === green (#CFFFBE)
+        const color = (issue['state'] === 'open') ? '#FFDDDD' : '#CFFFBE';
         data.push({
           text: '#' + issue['number'] + ': ' + issue['title'].substr(0, 20),
           url: issue['html_url'],
