@@ -8,7 +8,7 @@
 <!-- temporary open/closed key-->
 
 <div *ngFor="let repo of processed_repos">
-    <div style="background: linear-gradient(to right, lightgray, white, white, white); border-radius: 5px; padding: 5px;">
+    <div class="repoFade">
     {{repo.name | json}}
         <!-- cols = # of columns -->
         <!-- rowHeight = ratio... 5 wide, 1 high -->
