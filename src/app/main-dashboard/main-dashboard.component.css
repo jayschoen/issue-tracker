@@ -9,3 +9,8 @@
     border-radius: 5px;
     padding: 5px;
 }
+
+.issuePadding {
+    padding-left: 5px;
+    padding-right: 5px;
+}

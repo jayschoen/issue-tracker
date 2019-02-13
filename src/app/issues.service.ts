@@ -129,7 +129,7 @@ export class IssuesService {
         if (issue['title'].substr(0, 4) === 'TASK') {
           const color = (issue['state'] === 'open') ? this.issueColors['open'] : this.issueColors['closed'];
           data.push({
-            text: '#' + issue['number'] + ': ' + issue['title'].substr(5, 30),
+            text: '#' + issue['number'] + ': ' + issue['title'].substr(5, issue['title'].length),
             url: issue['html_url'],
             rows: 1,
             cols: 1,

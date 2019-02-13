@@ -14,9 +14,11 @@
     <strong>{{repo.name}}</strong>
         <!-- cols = # of columns -->
         <!-- rowHeight = ratio... 5 wide, 1 high -->
-        <mat-grid-list cols="5" rowHeight="5:1">
+        <mat-grid-list cols="4" rowHeight="5:1">
             <mat-grid-tile *ngFor="let issue of repo.data" [colspan]="issue.cols" [rowspan]="issue.rows" [style.background]="issue.color">
-                <a href="{{issue.url}}">{{issue.text}}</a>
+                <div class="issuePadding">
+                    <a href="{{issue.url}}">{{issue.text}}</a>
+                </div>
             </mat-grid-tile>
         </mat-grid-list>
     </div>
