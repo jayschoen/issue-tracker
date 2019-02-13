@@ -10,19 +10,15 @@ import { ConfigurationService } from './configuration.service';
 })
 export class IssuesService {
 
-  // probably need to move this int the environment file
-  private github_url = '';
+  // probably need to move this into the environment file
+  private github_url = 'https://api.github.com';
 
   private access_token = '';
   private owner = '';
   private organization = '';
 
-  issueColors = {
-    'open': '#FFDDDD',
-    'closed': '#CFFFBE'
-  }
-
   includedRepos: Array<string>;
+  issueColors = {};
 
   data$ = new BehaviorSubject<any[]>(undefined);
 
@@ -31,6 +27,7 @@ export class IssuesService {
     private configService: ConfigurationService
   ) {
     this.includedRepos = this.configService.settings['includedRepos'];
+    this.issueColors = this.configService.settings['issueColors'];
   }
 
   getIssues() {
@@ -130,8 +127,7 @@ export class IssuesService {
     for (const issues of repo['issues']) {
       for (const issue of issues) {
         if (issue['title'].substr(0, 4) === 'TASK') {
-          // open === red (#FFDDDD), closed === green (#CFFFBE)
-          const color = (issue['state'] === 'open') ? this.issueColors.open : this.issueColors.closed;
+          const color = (issue['state'] === 'open') ? this.issueColors['open'] : this.issueColors['closed'];
           data.push({
             text: '#' + issue['number'] + ': ' + issue['title'].substr(5, 20),
             url: issue['html_url'],

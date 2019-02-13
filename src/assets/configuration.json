@@ -1,3 +1,7 @@
 {
-    "includedRepos": []
+    "includedRepos": [],
+    "issueColors": {
+        "open": "",
+        "closed": ""
+    }
 }
