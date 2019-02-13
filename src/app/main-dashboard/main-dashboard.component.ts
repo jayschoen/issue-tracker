@@ -15,11 +15,15 @@ export class MainDashboardComponent implements OnInit {
 
   interval: any;
 
+  breakpoint = 4;
+
   constructor(
     private issuesService: IssuesService
   ) {}
 
   ngOnInit() {
+
+    this.breakpoint = (window.innerWidth <= 1250) ? 3 : 4;
 
     this.issuesService.data$.subscribe(
       data => this.processed_repos = data,
@@ -30,5 +34,9 @@ export class MainDashboardComponent implements OnInit {
     this.interval = setInterval(() => {
       this.issuesService.updateData();
     }, 300000);
+  }
+
+  checkWindowSize(event) {
+    this.breakpoint = (event.target.innerWidth <= 1250) ? 3 : 4;
   }
 }
