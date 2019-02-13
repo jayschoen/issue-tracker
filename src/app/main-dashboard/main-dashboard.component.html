@@ -1,15 +1,17 @@
 
-<!-- temporary open/closed key-->
-<mat-grid-list cols="2" rowHeight="30">
-    <mat-grid-tile [style.background]="issueColors.open">OPEN</mat-grid-tile>
-    <mat-grid-tile [style.background]="issueColors.closed">CLOSED</mat-grid-tile>
-</mat-grid-list>
+<!--open/closed key-->
+<div class="keyWrapper">
+    <mat-grid-list cols="2" rowHeight="30">
+        <mat-grid-tile [style.background]="issueColors.open"><strong>OPEN</strong></mat-grid-tile>
+        <mat-grid-tile [style.background]="issueColors.closed"><strong>CLOSED</strong></mat-grid-tile>
+    </mat-grid-list>
+</div>
 <br>
-<!-- temporary open/closed key-->
+<!--open/closed key-->
 
 <div *ngFor="let repo of processed_repos">
     <div class="repoFade">
-    {{repo.name | json}}
+    <strong>{{repo.name}}</strong>
         <!-- cols = # of columns -->
         <!-- rowHeight = ratio... 5 wide, 1 high -->
         <mat-grid-list cols="5" rowHeight="5:1">

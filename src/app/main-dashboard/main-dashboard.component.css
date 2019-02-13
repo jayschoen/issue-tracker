@@ -1,3 +1,9 @@
+.keyWrapper {
+    background: lightgray;
+    border-radius: 5px;
+    padding: 5px;
+}
+
 .repoFade {
     background: linear-gradient(to right, lightgray, white, white, white);
     border-radius: 5px;
