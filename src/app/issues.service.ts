@@ -127,17 +127,33 @@ export class IssuesService {
     for (const issues of repo['issues']) {
       for (const issue of issues) {
         if (issue['title'].substr(0, 4) === 'TASK') {
-          const color = (issue['state'] === 'open') ? this.issueColors['open'] : this.issueColors['closed'];
+          let checkBoxes = this.parseIssueBody(issue['body']);
+          const donePercent = (+(checkBoxes['checked'] / checkBoxes['total']).toFixed(2)) * 100;
+          const remainingPercent = 100 - donePercent;
+          checkBoxes = { ...checkBoxes, ...{ 'donePercent': donePercent, 'remainingPercent': remainingPercent }};
+          let color: string;
+          if (issue['state'] === 'open') {
+            color = this.issueColors['open'];
+          }
+          if (checkBoxes['checked'] > 0) {
+            color = `linear-gradient(to right, ${this.issueColors['closed']} ${checkBoxes['donePercent']}%, ${this.issueColors['inProgress']} ${checkBoxes['donePercent']}%)`;
+          }
+          if (issue['state'] === 'closed') {
+            color = this.issueColors['closed'];
+          }
+
           data.push({
-            text: '#' + issue['number'] + ': ' + issue['title'].substr(5, issue['title'].length),
-            url: issue['html_url'],
-            rows: 1,
-            cols: 1,
-            color: color
+            'text': '#' + issue['number'] + ': ' + issue['title'].substr(5, issue['title'].length),
+            'url': issue['html_url'],
+            'rows': 1,
+            'cols': 1,
+            'color': color,
+            'checkBoxes': checkBoxes
           });
         }
       }
     }
+    console.log(data);
     return data;
   }
 
@@ -155,7 +171,7 @@ export class IssuesService {
             const current = this.getIssuesByRepo(null, repo)
             .pipe(
               toArray(),
-              map((issues: any[]) => { return { repo: repo, issues: issues }})
+              map((issues: any[]) => ({ repo: repo, issues: issues }))
             );
             return current;
         }),
@@ -187,6 +203,19 @@ export class IssuesService {
         return a[property].localeCompare(b[property]);
       }
     });
+  }
+
+  parseIssueBody(body) {
+    const regex_total_reqs = /- \[.+\] REQ/g;
+    const regex_checked = /- \[\s*[xX]+\s*\] REQ/g;
+
+    const matches_total_reqs = body.match(regex_total_reqs);
+    const matches_checked = body.match(regex_checked);
+
+    return {
+      'total': matches_total_reqs ? matches_total_reqs.length : 0,
+      'checked': matches_checked ? matches_checked.length : 0
+    };
   }
 
 }

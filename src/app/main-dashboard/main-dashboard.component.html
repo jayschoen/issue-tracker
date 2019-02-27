@@ -1,8 +1,9 @@
 
 <!--open/closed key-->
 <div class="keyWrapper">
-    <mat-grid-list cols="2" rowHeight="30">
+    <mat-grid-list cols="3" rowHeight="30">
         <mat-grid-tile [style.background]="issueColors.open"><strong>OPEN</strong></mat-grid-tile>
+        <mat-grid-tile [style.background]="'linear-gradient(to right, ' + issueColors.closed + ' 50%, ' + issueColors.inProgress + ' 50%)'"><strong>IN PROGRESS</strong></mat-grid-tile>
         <mat-grid-tile [style.background]="issueColors.closed"><strong>CLOSED</strong></mat-grid-tile>
     </mat-grid-list>
 </div>
@@ -24,3 +25,4 @@
     </div>
     <br>
 </div>
+
