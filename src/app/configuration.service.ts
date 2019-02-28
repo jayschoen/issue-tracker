@@ -28,6 +28,6 @@ export class ConfigurationService {
   }
 
   set settings(updatedSettings: Object) {
-    this.app_settings = { ...this.app_settings, ...updatedSettings }
+    this.app_settings = { ...this.app_settings, ...updatedSettings };
   }
 }

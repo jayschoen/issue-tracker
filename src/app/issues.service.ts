@@ -136,7 +136,10 @@ export class IssuesService {
             color = this.issueColors['open'];
           }
           if (checkBoxes['checked'] > 0) {
-            color = `linear-gradient(to right, ${this.issueColors['closed']} ${checkBoxes['donePercent']}%, ${this.issueColors['inProgress']} ${checkBoxes['donePercent']}%)`;
+            color = `linear-gradient(to right, ${this.issueColors['closed']} ${checkBoxes['donePercent']}%, ${this.issueColors['open']} ${checkBoxes['donePercent']}%)`;
+          }
+          if (checkBoxes['checked'] === checkBoxes['total'] && issue['state'] === 'open') {
+            color = this.issueColors['attention'];
           }
           if (issue['state'] === 'closed') {
             color = this.issueColors['closed'];
@@ -206,8 +209,8 @@ export class IssuesService {
   }
 
   parseIssueBody(body) {
-    const regex_total_reqs = /- \[.+\] REQ/g;
-    const regex_checked = /- \[\s*[xX]+\s*\] REQ/g;
+    const regex_total_reqs = /- \[.+\]/g;
+    const regex_checked = /- \[\s*[xX]+\s*\]/g;
 
     const matches_total_reqs = body.match(regex_total_reqs);
     const matches_checked = body.match(regex_checked);
