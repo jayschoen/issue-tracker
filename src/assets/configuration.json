@@ -2,6 +2,7 @@
     "includedRepos": [],
     "issueColors": {
         "open": "",
-        "closed": ""
+        "closed": "",
+        "attention": ""
     }
 }
