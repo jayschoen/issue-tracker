@@ -15,8 +15,10 @@ export class MainDashboardComponent implements OnInit {
 
   interval: any;
 
+  default_width = '5:1';
+  default_height = '4:1';
   issue_width = window.innerWidth <= 1250 ? 3 : 4;
-  issue_height = window.innerWidth <= 1250 ? '4:1' : '3:1';
+  issue_height = window.innerWidth <= 1250 ? this.default_width : this.default_height;
 
   constructor(
     private issuesService: IssuesService
@@ -42,7 +44,7 @@ export class MainDashboardComponent implements OnInit {
     if (event) {
       window_width = event.target.innerWidth;
       issue_size['width'] = (window_width <= 1250) ? 3 : 4;
-      issue_size['height'] = (window_width <= 1250) ? '4:1' : '3:1';
+      issue_size['height'] = (window_width <= 1250) ? this.default_width : this.default_height;
     }
 
     this.issue_width = issue_size['width'];
@@ -56,13 +58,13 @@ export class MainDashboardComponent implements OnInit {
 
     if (issue_count >= 4) {
       size['width'] = this.issue_width;
-      size['height'] = this.issue_height; // '3:1';
+      size['height'] = this.issue_height;
     } else if (issue_count === 3) {
       size['width'] = 3;
-      size['height'] = '4:1';
+      size['height'] = '5:1';
     } else if (issue_count === 2) {
       size['width'] = 2;
-      size['height'] = '6:1';
+      size['height'] = '8:1';
     } else {
       size['width'] = 1;
       size['height'] = '15:1';
