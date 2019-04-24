@@ -1,16 +1,18 @@
 .keyWrapper {
-    background: lightgray;
+    background: rgb(43, 43, 43);
     border-radius: 5px;
     padding: 5px;
 }
 
 .repoFade {
-    background: linear-gradient(to right, lightgray, white, white, white);
+    background: rgb(43, 43, 43);
     border-radius: 5px;
     padding: 5px;
+    color: white;
 }
 
 .issuePadding {
-    padding-left: .3rem;
-    padding-right: .3rem;
+    
+    margin: .2rem .5rem;
+    text-align: center;
 }
